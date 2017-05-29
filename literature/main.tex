@@ -1,0 +1,98 @@
+\documentclass[a4paper]{article}
+\setcounter{secnumdepth}{5}
+\setcounter{tocdepth}{5}
+%% Language and font encodings
+\usepackage[english]{babel}
+\usepackage[utf8x]{inputenc}
+\usepackage[T1]{fontenc}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% keep %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage[inline]{enumitem}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% keep %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage[titletoc, title]{appendix}
+
+\usepackage{tocloft}
+\renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
+
+\newcommand{\subscript}[2]{$#1 _ #2$}
+
+%% Sets page size and margins
+\usepackage[a4paper,top=3cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+%% Useful packages
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage[colorlinks=true, allcolors=black]{hyperref}
+\usepackage{pdfpages}
+\usepackage{tabularx}
+
+
+\title{Exjobb-rapport}
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% keep %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsubsection{Flight Software Architecture}
+\label{subsubsec:FSA}
+
+Many Cubesat missions choose a layered architecture for the onboard software development \cite{Addaim2010-ym}\cite{compass-1}\cite{Greg_D_Manyak2011-xr}\cite{cadh-architecture}\cite{KySat-2}. This layered structure is described by Johl and Lightsey et al in the document "a reusable command and data handling system for university cubesat missions" \cite{reusable-cadh}. Johl and Lightsey devided the onboard architecture into four layers. In common with the rest of the architecture layer description in other documents, the layer have a top down approach. The lower layers have closer relationship with the onboard hardware; The higher layer is close to application that controls the logic on the flight software. The four layers that Johl and Lightsey proposed are listed from bottom as below: 
+\begin{itemize} 
+    
+    \item Device Interface Layer \\
+    Johl and Lightsey proposed that the bottom of the architecture to be the device interface layer. Device interface layer contain the device drivers that implement the protocols for communication between the OBC and other spacecraft hardware. These device drives enable the upper layers uses communication protocols such as I2C, SPI, and GPIO as needed. A similar architecture is proposed by Mitchel, C et al from KySat-2 \cite{KySat-2}. However, in the book "Onboard Computers, Onboard Software and Satellite Operations" \cite{obc-book}, Eickhoff named this layer "operating system ad hardware interface layer". He proposed to also include the BIOS and the realtime operating system in the layer. This is more similar to the library structure that ISIS provided for MIST mission. 
+    
+    \item High-Level Subsystem Interface Layer \\
+    This layer contains the components that are used to provide the functionality from various onboard subsystems and devices of the spacecraft. The complete functionality of the subsystems and devices should be contained in this layer with appropiate name for usability. The examples including COM function, EPS functions, and payload functions. In the KySat-2 documentation, Mitchel,C et all composed this layer with similar API to access external support devices on the software level. In the KySat-2 mission, this layer and the bottom layer are composed as hardware access layer. 
+    
+    \item Software Process Layer \\
+    Johl and Lightsey briefly mentioned software process layer in the document. The authors proposed this layer to provide the processes and the means for storage of mission data, health data, and generated command and error message. The components shares similarity to the KySat architecture. However, in the KySat documentation, it is proposed as distributed kernel layer. The primary feature of the distributed kernel layer is to monitor the subsystem modules. Besides the monitor feature, the error handling, ground command interface are also mentioned as features on the distributed kernel layer.
+    
+    \item Application Layer\\
+    Most documents unanomously named the top layer of the flight software application layer \cite{Addaim2010-ym}\cite{compass-1}\cite{Greg_D_Manyak2011-xr}\cite{cadh-architecture}\cite{KySat-2}\cite{reusable-cadh}\cite{obc-book}. The application layer includes the main flight software application that controls the subsystems and the payload to implement the mission \cite{KySat-2}\cite{obc-book}. Due to the variaty of payload and subsystem of each mission, this layer is unique for every mission \cite{reusable-cadh}.  
+    
+    
+\end{itemize}
+
+
+\subsubsection{Onboard Tasks and Scheduling}
+
+A task on a RTOS is a small program in its own right \cite{freeRTOS}. It is a basic building block of RTOS software \cite{tasks}. Many onboard software have a centralized task structure \cite{cadh-architecture}\cite{Schor2009-px}. \\
+\indent Dabrowski from the ION satellite mission describes the central piece of software as application manager \cite{UIUC-sat}. This is considered a robust and intelligent version of the scheduler. On the ION satellite mission, the application manager is able to start and stop applications as specified in configuration file. It also performs system recovery. On AAU-cubesat however, the centralized task is refered as the supervisor \cite{AAU}. The supervisor performs as the organizer of the satellite software system. The functionality of the supervisor is routing information between other tasks and ensure the healthiness of the mission. \\ 
+\indent As stated in the Chapter \ref{subsubsec:FSA}, application layer have various components that controls the onboard subsystems and payloads. For each application component, AAU-cubesat also created the coresponding task or tasks. For example, a specilized task PCU(power control unit) is created to control the power hardware and level of activity. As another example for this matter, the CubeSat mission implemented a COM task for communication downlink from satellite to earth, and another task COMRX for the communication from the earth to satellite. \\
+\indent The scheduling onboard can be handled by a task as the ION satellite \cite{UIUC-sat}. It can also be handled with a scheduling cycle as the CryoSat mission \cite{obc-book}. The onboard cycle is devided into different subcycles, each with a time duration. A certain set of software managers or handlers are triggered during a subcycle. KySat-2 performs a different task scheduling due to the implementation of non-preemptive RTOS \cite{KySat-2}. On KySat-2, a watchdog timer(WDT) is implemented. WDT is a piece of hardware that sends a reset signal to the CPU after a preset period of time. The software needs to perform a kick subroutine to reset the timer to prevent the reseting action. In KySat-2 mission, each task meets the requirement of a critical section no longer than the watch dog timer(WDT) period. The WDT kick subroutine can only be called by the scheduler, thus prevents any hung task that occupies the CPU.\\
+
+\subsubsection{I2C interface}
+In the document "Design and Implementation of Generic Flight Software for a CubeSat", A.E.Heunis discussed a similar situation as MIST regarding the I2C bus \cite{I2C}. An onboard I2C bus is used for the OBC to manage the other on-board subsystems. The OBC acts as the I2C bus masters, while running multiple tasks. Heunis claims that it is important that only one task is accessing the I2C bus at a time to avoid data corruption. \\
+\indent This leads to a discussion on the necessity for implementing a I2C manager. The idea of a I2C manager is that all the data that 
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% keep %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+\newpage
+\bibliographystyle{unsrt}
+\bibliography{references}
+
+
+
+\newpage
+\section{Appendix}
+\begin{appendices}
+Observera.
+Nedanstående rubriker är förslag på bilagor som kommer att ingå i den färdiga rapporten. Författarna skriver rapporten i Latex och har ännu inte hittat ett ordentligt sätt att ge en bifogad PDF en korrekt rubrik, därför blir det en tom sida innan en bifogad PDF. De bifogade PDF som finns i dagsläget är uppdragsbeskrivning och projektdefinition.
+\section{Kravdokument}
+\label{appendix:kravdokument}
+\section{Arkitekturdokument}
+\label{appendix:arkitekturdokument}
+\section{Clickstreams}
+\label{appendix:clickstreams}
+\section{Uppdragsbeskrivning}
+\label{appendix:uppdragsbeskrivning}
+%\includepdf[pages={-}]{appendices/uppdragsbeskrivning.pdf}
+\section{Projektdefinition}
+\label{appendix:projektdef}
+%\includepdf[pages={-}]{appendices/Projektdefinition_v4.pdf}
+\end{appendices}
+\end{document}

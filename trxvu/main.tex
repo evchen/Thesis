@@ -1,0 +1,115 @@
+\documentclass[a4paper]{article}
+\setcounter{secnumdepth}{5}
+\setcounter{tocdepth}{5}
+%% Language and font encodings
+\usepackage[english]{babel}
+\usepackage[utf8x]{inputenc}
+\usepackage[T1]{fontenc}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% keep %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage[inline]{enumitem}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% keep %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage[titletoc, title]{appendix}
+
+\usepackage{tocloft}
+\renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
+
+\newcommand{\subscript}[2]{$#1 _ #2$}
+
+%% Sets page size and margins
+\usepackage[a4paper,top=3cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+%% Useful packages
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage[colorlinks=true, allcolors=black]{hyperref}
+\usepackage{pdfpages}
+\usepackage{tabularx}
+
+
+\title{Exjobb-rapport}
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% keep %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsubsection{TRXVU}
+TRXVU is a transceiver module purchased from ISIS. It is designed specifically for nanosatellite application. The transmitter supports BPSK with UHF frequencies from 430 MHz to 450 MHz. The receiver supports AFSK with VHF frequencies from 140 MHz to 150 MHz. The receiver section is independent from transmitter section with the exception of a shared I2C communication section. This allows the radio to transmit and receive at the same time. \\\\
+\indent The uplink contains a buffer for temperarily store telecommands. This buffer can contain 40 frames, each frame can contain data up to 200 bytes. The buffer uses first-in-first-out, which means the first command to be retrieved from the buffer is the oldest telecommand arrived on the radio. The data rate for the uplink is 1200 bits per second. \\ \\
+\indent The downlink also contains a buffer similar to the uplink as it also uses first-in-first-out. It also contains 40 frames for telemetry. The maximum frame size for the downlink is 235 bytes. the data rate for the downlink is preset to 1200 bits per second. However, data rate can be changed upon request ranging from 1200 bits per second to 9600 bits per second.   \\ \\
+\indent The OBC interfaces with TRxVU through the on board I2C line which is shown in Figure \ref{fig:onboard-architecture}. OBC sends out pre-defined command strings to the TRxVU as the master of the I2C line. If the command requires respond, the OBC will also request a write back from the TRxVU. A few commands are used during this thesis work:
+
+\begin{itemize} 
+    
+    \item Get number of frames in receive buffer -- \textit{command code 0x 21}\\
+    This command retrieves number of frames stored in the receiver buffer. Command does not contain any parameters. The respond has two byte in size and the value is between 0 to 40. 
+    
+    \item Get frame frome receive buffer -- \textit{0x 22}\\
+    This command retrieves the oldest frames stored in the receiver buffer. Command does not contain any parameters. The respond for this command contains four fields: the frame contents size(2 bytes), doppler frequency(2 bytes), received signal strength indicator(2 bytes) and the frame content ranging from 0 to 200 bytes. 
+    
+    \item Measure all telemtry channels -- \textit{0x 1A}\\
+    This command retrieves the housekeeping data from the receiver including 
+    \begin{enumerate*}[label={\arabic*)}]
+        \item total supply current 
+        \item power amplifier temperature 
+        \item local oscillitor temperature 
+        \item instantaneous received signal doppler offset at the receiver port 
+        \item instantaneous received signal stength at the receiver port and
+        \item supply voltage. 
+    \end{enumerate*}
+     Command does not contain any parameter. The response contain the data mentioned above where each field consist of 2 bytes. 
+    \item Send frame -- \textit{0x 10}\\
+    This command send a telemetry frame to the telemetry buffer. The parameter of this command contains the AX.25 frame INFO field. The data length ranges between 1 byte to 235 bytes. This command have 1 byte of response. The response contains the remaining buffer slots that is still available for additional frames. The response ranging from 0, which means that the buffer is full, to 40. If the frame can not be added, the response has a value of 255. This can cause by     \begin{enumerate*}[label={\arabic*)}]
+        \item the frame buffer is full,  
+        \item the content size is 0 bytes or 
+        \item the content size is larger than 235 bytes
+    \end{enumerate*}
+    
+    \item Set transmitter idle state -- \textit{0x 24}\\
+    This command set the transmitter state when it is idle. The parameter consist of 1 byte. To turn off the transmitter when idle, the parameter value is set to 0; To keep the transmitter on when idle, the parameter value is set to 1. Other values have no effect on the transmitter.
+    
+    \item Set transmitter idle state -- \textit{0x 25}\\
+    This command retrieves the housekeeping data from the transmitter including 
+    \begin{enumerate*}[label={\arabic*)}]
+        \item instantaneous RF reflected power from transmitter port 
+        \item instantaneous RF forward power from transmitter port
+        \item supply voltage
+        \item total supply current 
+        \item power amplifier temperature
+        \item local oscillator temperature. 
+    \end{enumerate*}
+     Command does not contain any parameter. The response contain the data mentioned above where each field consist of 2 bytes. 
+\end{itemize}
+
+All commands start with 1 byte of the command code followed by the parameter. More commands are defined for the software interface such as changing callsign, system reset and changing downlink bit rate. However these functions are not further explored during the thesis.
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% keep %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+\newpage
+\bibliographystyle{unsrt}
+\bibliography{references}
+
+
+
+\newpage
+\section{Appendix}
+\begin{appendices}
+Observera.
+Nedanstående rubriker är förslag på bilagor som kommer att ingå i den färdiga rapporten. Författarna skriver rapporten i Latex och har ännu inte hittat ett ordentligt sätt att ge en bifogad PDF en korrekt rubrik, därför blir det en tom sida innan en bifogad PDF. De bifogade PDF som finns i dagsläget är uppdragsbeskrivning och projektdefinition.
+\section{Kravdokument}
+\label{appendix:kravdokument}
+\section{Arkitekturdokument}
+\label{appendix:arkitekturdokument}
+\section{Clickstreams}
+\label{appendix:clickstreams}
+\section{Uppdragsbeskrivning}
+\label{appendix:uppdragsbeskrivning}
+%\includepdf[pages={-}]{appendices/uppdragsbeskrivning.pdf}
+\section{Projektdefinition}
+\label{appendix:projektdef}
+%\includepdf[pages={-}]{appendices/Projektdefinition_v4.pdf}
+\end{appendices}
+\end{document}

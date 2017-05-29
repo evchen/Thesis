@@ -1,0 +1,72 @@
+\begin{thebibliography}{10}
+
+\bibitem{Addaim2010-ym}
+Adnane Addaim, Abdelhaq Kherras, and El~Bachir Zantou.
+\newblock {\em Design of Low-cost Telecommunications {CubeSat-class}
+  Spacecraft}.
+\newblock INTECH Open Access Publisher, 2010.
+
+\bibitem{compass-1}
+Artur Scholz.
+\newblock {\em Command and data handling system design for the {COMPASS-1}
+  Picosatellite}.
+\newblock PhD thesis, University of Applied Sciences Aachen.
+
+\bibitem{Greg_D_Manyak2011-xr}
+California Polytechnic State University-San Luis~Obispo Greg D.~Manyak.
+\newblock {\em Fault Tolerant and Flexible {CubeSat} Software Architecture}.
+\newblock PhD thesis, California Polytechnic State University, San Luis Obispo,
+  2011.
+
+\bibitem{cadh-architecture}
+S~F Sabri, S~S Yuhaniz, and K~Kamardin.
+\newblock {\em Designing a Low Cost CubeSat's Command And Data Handling
+  Subsystem Kit}.
+\newblock PhD thesis, 2006.
+
+\bibitem{KySat-2}
+C~Mitchell, J~Rexroat, S~A Rawashdeh, and J~Lumpp.
+\newblock Development of a modular command and data handling architecture for
+  the {KySat-2} {CubeSat}.
+\newblock In {\em 2014 {IEEE} Aerospace Conference}, pages 1--11, March 2014.
+
+\bibitem{reusable-cadh}
+S~Johl, E~Glenn Lightsey, S~M Horton, and G~R Anandayuvaraj.
+\newblock A reusable command and data handling system for university cubesat
+  missions.
+\newblock In {\em 2014 {IEEE} Aerospace Conference}, pages 1--13, March 2014.
+
+\bibitem{obc-book}
+Jens Eickhoff.
+\newblock {\em Onboard Computers, Onboard Software and Satellite Operations: An
+  Introduction}.
+\newblock Springer Aerospace Technology. Springer Berlin Heidelberg, 2012.
+
+\bibitem{freeRTOS}
+Richard Barry.
+\newblock {\em Mastering the {FreeRTOS™} Real Time Kernel, A {Hands-On}
+  Tutorial Guide}.
+\newblock Real Time Engineers Ltd, 2016.
+
+\bibitem{tasks}
+Tasks and states - {RTOS}.
+\newblock \url{https://sites.google.com/site/rtosmifmim/home/tasks-and-states}.
+\newblock Accessed: 2017-5-27.
+
+\bibitem{Schor2009-px}
+D~Schor, J~Scowcroft, C~Nichols, and W~Kinsner.
+\newblock A command and data handling unit for pico-satellite missions.
+\newblock In {\em 2009 Canadian Conference on Electrical and Computer
+  Engineering}, pages 874--879, May 2009.
+
+\bibitem{UIUC-sat}
+Michael~J Dabrowski.
+\newblock {\em The design of a software system for a small space satellite}.
+\newblock PhD thesis, University of Illinois at Urbana-Champaign, 2003.
+
+\bibitem{AAU}
+Aalborg University.
+\newblock {\em Documentation of {AAU-Cubesat} On Board Computer Software},
+  2002.
+
+\end{thebibliography}
